@@ -45,12 +45,48 @@ function Item (toDo, location, day) {
 }
 
 //UI Logic
+let newList = new List();
+
+function displayListDetails(newListDisplay) {
+  let toDoList = $("ul#toDoFinal");
+  let htmlfortoDoList = "";
+  newListDisplay.items.forEach(function(item) {
+    htmlfortoDoList += "<li id =" + item.id + ">" + item.toDo + " at " + item.location + " on " + item.day + "." + "</li>";
+  });
+  toDoList.html(htmlfortoDoList);
+};
+
+function attachToDoListeners() {
+  $("ul#toDoFinal").on("click", "li", function () {
+    showDoneDelete(this.id);
+  });
+  $("#buttons").on("click", ".deleteButton", function() {
+    newList.deleteItem(this.id);
+    $(htmlfortoDoList).html("Done!");
+  })
+};
+
+function showDoneDelete(itemId) {
+  const item = newList.findItem(itemId);
+  let buttons = $("#buttons");
+  buttons.empty();
+  buttons.append("<button class ='deleteButton' id=" + item.Id + ">Delete</button>");
+}
+
+
 $(document).ready(function() {
+  attachToDoListeners();
   $("form#toDoList").submit(function(event) {
     event.preventDefault();
-    const inputtedToDo = $("input#todo").val
-  }
-}
+    const inputtedToDo = $("input#todo").val();
+    const inputtedLocation = $("input#location").val();
+    const inputtedDay = $("input#day").val();
+    let newItem = new Item (inputtedToDo, inputtedLocation, inputtedDay);
+    newList.addItem(newItem);
+    displayListDetails(newList);
+    $("#toDoFinal").show();
+  });
+});
 
 
 /*Item.prototype.details = function() {
@@ -58,3 +94,8 @@ $(document).ready(function() {
 }*/
 
 
+/*
+$("input#todo").val("");
+$("input#location").val("");
+$("input#day").val("");
+*/
